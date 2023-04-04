@@ -23,7 +23,10 @@ namespace BehaviourTree
         }
         public Node (List<Node> children)
         {
-            children = children;
+            this.children = children;
+            foreach(var child in children){
+                child.parent = this;
+            }
         }
         
         private void _addChild(Node child)

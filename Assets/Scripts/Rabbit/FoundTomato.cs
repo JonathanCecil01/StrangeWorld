@@ -12,8 +12,8 @@ public class FoundTomato : Node
 
     //public GameObject playerRef;
 
-    public static int  targetMask = 6;
-    public static int  obstructionMask = 7;
+    public static LayerMask targetMask = LayerMask.GetMask("Tomato");
+    public static LayerMask obstructionMask =  LayerMask.GetMask("Obstruction");
 
 
     public List<Transform> visibleTargets = new List<Transform>();
@@ -26,6 +26,7 @@ public class FoundTomato : Node
 
     public override NodeState Evaluate()
     {
+        Debug.Log("In FoundTomato");
         object t = GetData("tomato");
         if(t == null)
         {
@@ -43,6 +44,7 @@ public class FoundTomato : Node
 
                     if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask)){
                         visibleTargets.Add(target);
+                        Debug.Log("Found A Tomato");
                         parent.parent.SetData("tomato", target);
                         state = NodeState.SUCCESS;
                         return state;
@@ -60,6 +62,8 @@ public class FoundTomato : Node
                 }            
 
             }
+            state = NodeState.FAILURE;
+            return state;
         }
         state = NodeState.RUNNING;
         return state;

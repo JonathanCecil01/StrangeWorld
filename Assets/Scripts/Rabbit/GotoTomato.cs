@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using BehaviourTree;
 
 public class GotoTomato : Node
@@ -13,15 +14,19 @@ public class GotoTomato : Node
     public GotoTomato(Transform transform)
     {
         this.transform = transform;
-        rabbit = transform.GetComponent<UnityEngine.AI.NavMeshAgent>();;
-        this.animator = transform.GetComponent<Animator>();
     }
 
     public override NodeState Evaluate()
     {
+        
         Transform target = (Transform)GetData("tomato");
-        rabbit.SetDestination(target.position);
-        animator.Play("run");
+        if(target == null)
+        {
+            state = NodeState.FAILURE;
+            return state;
+        }
+        transform.GetComponent<NavMeshAgent>().SetDestination(target.position);
+        transform.GetComponent<Animator>().Play("run");
         state = NodeState.RUNNING;
         return state;
     }
