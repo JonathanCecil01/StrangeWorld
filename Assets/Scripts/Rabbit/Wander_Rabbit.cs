@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Wander_Rabbit : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class Wander_Rabbit : MonoBehaviour
     private bool isRotatingLeft= false;
     private bool isRotatingRight= false;
     private bool isRunning= false;
+
     // Update is called once per frame
     void Start(){
         rabbitAnim = gameObject.GetComponent<Animator>();
@@ -27,8 +29,6 @@ public class Wander_Rabbit : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
-
         else if(isWandering == false){
             StartCoroutine(Wander());
         }
@@ -48,10 +48,25 @@ public class Wander_Rabbit : MonoBehaviour
         health -= 0.05;
     }
 
+    void OnCollisionEnter(Collision other)
+    {
+        if(other.collider.CompareTag("Tomato"))
+        {
+            print("Coll");
+            Destroy(other.gameObject);
+            health+=2;
+        }
+    }
+
     void Death()
     {
         rabbitAnim.SetBool("isDead", true);
     }
+    // void MoveToTarget(Transform target)
+    // {
+    //     print("Target is set");
+    //     rabbit.SetDestination(target.position);
+    // }
 
     IEnumerator Wander()
     {

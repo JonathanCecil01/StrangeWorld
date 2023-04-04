@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -10,22 +11,26 @@ public class FieldOfView : MonoBehaviour
     [Range(0,360)]
     public float angle;
 
-    public GameObject playerRef;
+    //public GameObject playerRef;
 
     public LayerMask targetMask;
     public LayerMask obstructionMask;
+
+    public UnityEngine.AI.NavMeshAgent rabbit;
+
+    public List<Transform> visibleTargets = new List<Transform>();
 
     public bool canSeePlayer;
 
     private void Update()
     {
-        playerRef = GameObject.FindGameObjectWithTag("Tomato");
-        StartCoroutine(FOVRoutine());
+        //playerRef = GameObject.FindGameObjectWithTag("Tomato");
+        StartCoroutine("FOVRoutine");
     }
 
     private IEnumerator FOVRoutine()
     {
-        WaitForSeconds wait = new WaitForSeconds(0.8f);
+        WaitForSeconds wait = new WaitForSeconds(0.2f);
 
         while (true)
         {
@@ -36,23 +41,30 @@ public class FieldOfView : MonoBehaviour
 
     private void FieldOfViewCheck()
     {
+        visibleTargets.Clear();
         Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
-
-        if (rangeChecks.Length != 0)
+        for(int i=0;i<rangeChecks.Length;i++)
         {
-            int min_index = 0;
-            int i=0;
-            float min_range = 99999f;
-            foreach(var target1 in rangeChecks)
+            if(rangeChecks[i]==null)
+                continue;
+            Transform target = rangeChecks[i].transform;
+            Vector3 directionToTarget = (target.position - transform.position).normalized;
+            if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
             {
-                if(Vector3.Distance(target1.transform.position, transform.position) < min_range)
-                {
-                    min_index = i;
-                    min_range = Vector3.Distance(target1.transform.position, transform.position);
+                float distanceToTarget = Vector3.Distance(transform.position, target.position);
+
+                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask)){
+                    visibleTargets.Add(target);
+                    rabbit.SetDestination(target.position);
+                    gameObject.GetComponent<Animator>().Play("run");
                 }
-                i++;
-            }
-            Transform target = rangeChecks[min_index].transform;
+            }            
+
+
+        }
+        /*if (rangeChecks.Length != 0)
+        {
+            Transform target = rangeChecks[0].transform;
             Vector3 directionToTarget = (target.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
@@ -69,6 +81,6 @@ public class FieldOfView : MonoBehaviour
                 canSeePlayer = false;
         }
         else if (canSeePlayer)
-            canSeePlayer = false;
+            canSeePlayer = false;*/
     }
 }
