@@ -7,11 +7,9 @@ using BehaviourTree;
 public class Wander : Node
 {
     //public float moveSpeed = 1f;
-    public float rotationSpeed = 50f;
-    public double health = 100;
+    private RabbitManager rabbitManager;
 
     private GameObject gameObject;
-    Animator rabbitAnim;
 
     private bool isIdle=  true;
     private bool isRotatingLeft= false;
@@ -33,6 +31,7 @@ public class Wander : Node
     {
         Debug.Log("In Wander");
         Transform transform  = gameObject.transform;
+        rabbitManager = transform.GetComponent<RabbitManager>();
         if(isIdle)
         {
             wait_counter+= Time.deltaTime;
@@ -47,7 +46,7 @@ public class Wander : Node
         else{
             if(isRunning){
                 gameObject.GetComponent<Animator>().Play("run");
-                transform.position += transform.forward*Time.deltaTime*Rabbit_BT.moveSpeed;
+                transform.position += transform.forward*Time.deltaTime*rabbitManager.speed;
                 run_counter+= Time.deltaTime;
                 if(run_counter>= runWait)
                 {
@@ -62,7 +61,7 @@ public class Wander : Node
             if (rotLorR == 1){
                 if(isRotatingLeft){
                     gameObject.GetComponent<Animator>().Play("idle");
-                    transform.Rotate(transform.up*Time.deltaTime*rotationSpeed);
+                    transform.Rotate(transform.up*Time.deltaTime*rabbitManager.rot_speed);
                     rot_counter+= Time.deltaTime;
                     if(rot_counter>=rotWait)
                     {
@@ -75,7 +74,7 @@ public class Wander : Node
             else if (rotLorR == 2){
                 if(isRotatingRight){
                     gameObject.GetComponent<Animator>().Play("idle");
-                    transform.Rotate(transform.up*Time.deltaTime*rotationSpeed);
+                    transform.Rotate(transform.up*Time.deltaTime*rabbitManager.rot_speed);
                     rot_counter+= Time.deltaTime;
                     if(rot_counter>=rotWait)
                     {

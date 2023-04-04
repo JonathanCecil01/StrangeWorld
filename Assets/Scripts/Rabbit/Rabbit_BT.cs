@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using BehaviourTree;
 public class Rabbit_BT : Tree
 {
+    //private RabbitManager rabbitManager;
     public static float moveSpeed = 2f;
-    public static float eat_range = 1f;
+    public static float eat_range = 1.5f;
     public UnityEngine.GameObject gameObject;
 
     protected override Node SetUpTree()

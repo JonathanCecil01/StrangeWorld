@@ -6,9 +6,8 @@ public class FoundTomato : Node
 {
     private Transform transform;
     private Animator animator;
-    public float radius = 3f;
-    [Range(0,360)]
-    public float angle = 131f;
+
+    private RabbitManager rabbitManager;
 
     //public GameObject playerRef;
 
@@ -26,19 +25,20 @@ public class FoundTomato : Node
 
     public override NodeState Evaluate()
     {
+        rabbitManager = transform.GetComponent<RabbitManager>();
         Debug.Log("In FoundTomato");
         object t = GetData("tomato");
         if(t == null)
         {
             visibleTargets.Clear();
-            Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
+            Collider[] rangeChecks = Physics.OverlapSphere(transform.position, rabbitManager.view_radius, targetMask);
             for(int i=0;i<rangeChecks.Length;i++)
             {
                 if(rangeChecks[i]==null)
                     continue;
                 Transform target = rangeChecks[i].transform;
                 Vector3 directionToTarget = (target.position - transform.position).normalized;
-                if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
+                if (Vector3.Angle(transform.forward, directionToTarget) < rabbitManager.angle / 2)
                 {
                     float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
