@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BehaviourTree
 {
@@ -32,7 +33,7 @@ namespace BehaviourTree
         }
         public virtual NodeState Evaluate() => NodeState.FAILURE; 
 
-        private void SetData(string key, object val){
+        public void SetData(string key, object val){
             _dataContext[key] = val;
         }
 

@@ -1,10 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace BehaviourTree{
-    public class Selector : Node
+    public class Sequence : Node
     {
-        public Selector() : base() { }
-        public Selector(List<Node> children) : base(children) { }
+        public Sequence() : base() { }
+        public Sequence(List<Node> children) : base(children) { }
         public override NodeState Evaluate()
         {
             bool isChildRunning = false;
